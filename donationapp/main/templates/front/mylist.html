@@ -1,0 +1,76 @@
+{% extends 'front/profile_master.html' %}
+{% load static %}
+
+{% block mainblock %}
+<h1>Name: <a href="{% url 'user-profile' %}">{{user.username}}</a></h1>
+
+<!-- END Datatables Header -->
+
+                        <!-- Datatables Content -->
+                        <div class="block full">
+                            <div class="block-title">
+                                <h2><strong>Items</strong> List</h2>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table id="example-datatable" class="table table-vcenter table-condensed table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">ID</th>
+                                            <th class="text-center">Image</th>
+                                            <th>Title</th>
+                                            <th>Date & Time</th>
+                                            <th>Category</th>
+                                            <th>Views</th>
+                                            <th class="text-center">Actions</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cc in items %}
+                                        <tr>
+                                            <td class="text-center">{{cc.pk}}</td>
+                                            <td class="text-center"><img style="display: inline-block; width:50px; height:50px;" src="{{cc.picurl}}" alt="avatar" class="img-circle"></td>
+                                            <td>{{cc.name}}</td>
+                                            <td>{{cc.date}} | {{cc.time}}</td>
+                                            <td>{{cc.catname}}</td>
+                                            <td>{{cc.show}}</td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <a href="{% url 'items_edit' pk=cc.pk %}" data-toggle="tooltip" title="Edit" class="btn btn-dark mr-2">Edit</a>
+                                                    <a href="{% url 'items_delete' pk=cc.pk %}" data-toggle="tooltip" title="Delete" class="btn btn-dark ml-2">Delete</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                <!--pagination buttons-->
+                                Page {{items.number}} From {{items.paginator.num_pages}}
+                                <br><br>
+                                {% if items.has_previous %}
+                                <a href="?page={{items.previous_page_number}}" data-toggle="tooltip" title="Previous" class="btn btn-xs btn-default">Previous</a>
+                                {% endif %}
+
+                                {% for i in items.paginator.page_range %}
+                                    {% if items.number == i %}
+                                        <a href="#" onclick="return false" data-toggle="tooltip" title="{{Disables}}" class="btn btn-xs btn-default">{{i}}</a>
+                                    {% else %}
+                                        <a href="?page={{i}}" data-toggle="tooltip" title="{{i}}" class="btn btn-xs btn-default">{{i}}</a>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if items.has_next %}
+                                <a href="?page={{items.next_page_number}}" data-toggle="tooltip" title="Next" class="btn btn-xs btn-default">Next</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- END Datatables Content -->
+{% endblock %}
+
+{% block footerblock %}
+<!-- Load and execute javascript code used only in this page -->
+<script src="{% static 'back/js/pages/tablesDatatables.js' %}"></script>
+<script>$(function(){ TablesDatatables.init(); });</script>
+
+{% endblock %}
